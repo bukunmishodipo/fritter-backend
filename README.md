@@ -181,6 +181,7 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - An array of all freets sorted in descending order by date modified
 
+
 #### `GET /api/freets?author=USERNAME` - Get freets by author
 
 **Returns**
@@ -313,3 +314,76 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
+
+### Newly Added Routes
+
+#### `GET /api/likes?user=USERNAME` - Get all likes by user
+
+**Returns**
+
+- An array of all the user's likes in descending order by date liked
+
+#### `POST /api/likes/:freetId?` - Like an existing freet
+
+**Body**
+
+- `freetId` _{string}_ - The liked freet
+
+**Returns**
+
+- List of likes plus the liked freet
+
+#### `DELETE /api/likes/:freetId?` - unike an existing freet
+
+**Returns**
+
+- List of likes minus the unliked freet
+
+#### `POST /api/lists` - Create an new list
+
+**Body**
+
+- `listName` _{string}_ - The name of the list
+- `description` _{string}_ - An optional description of the list 
+- `freets` _{array}_ - A list of freets added to the list which is initially empty  
+- `public` _{boolean}_ - Denotes who has access to the list
+
+**Returns**
+
+- A success message
+- An object with the created list that's either public or private
+
+#### `PUT /api/lists/:freetId` - Add freet to list
+
+**Body**
+
+- `freet` _{Freet}_ - The freet being added to a list
+- `list` _{List}_ - The list the freet is being added to
+
+**Returns**
+
+- A success message
+- An object with the update list
+
+#### `DELETE /api/lists/:listName?` - delete a list
+
+**Returns**
+
+- List of lists minus the deleted list
+
+#### `GET /api/prompts` - Get prompt
+
+**Returns**
+
+- A string with the prompt and a form to respond
+
+#### `POST /api/prompts` - Respond to prompt
+**Body**
+
+- `response` _{Freet}_ - The prompt response
+
+**Returns**
+
+- Prompt response pinned to the user profile and added to the Prompts page
+
+
