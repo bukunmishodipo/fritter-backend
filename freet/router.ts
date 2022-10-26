@@ -3,6 +3,7 @@ import express from 'express';
 import FreetCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as freetValidator from '../freet/middleware';
+import * as likeValidator from '../like/middleware';
 import * as util from './util';
 
 const router = express.Router();
@@ -39,7 +40,7 @@ router.get(
     res.status(200).json(response);
   },
   [
-    userValidator.isAuthorExists
+    likeValidator.isUserExists
   ],
   async (req: Request, res: Response) => {
     const authorFreets = await FreetCollection.findAllByUsername(req.query.author as string);

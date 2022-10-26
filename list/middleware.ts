@@ -1,17 +1,6 @@
 import type {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
 import FreetCollection from '../freet/collection';
-import LikeCollection from '../like/collection';
-
-// TODO: Add isValidFreetOrComment
-
-const isUserExists = async (req: Request, res: Response, next: NextFunction) => {
-  if (!req.query.user) {
-    res.status(400).json({
-      error: 'Provided author username must be nonempty.'
-    });
-    return;
-  };
 
 /**
  * Checks if a freet with freetId is req.params exists
@@ -30,25 +19,6 @@ const isFreetExists = async (req: Request, res: Response, next: NextFunction) =>
 
   next();
 };
-
-/**
- * Checks if a like with likeId is req.params exists
- */
- const isLikeExists = async (req: Request, res: Response, next: NextFunction) => {
-  const validFormat = Types.ObjectId.isValid(req.params.likeId);
-  const like = validFormat ? await LikeCollection.findOne(req.params.likeId) : '';
-  if (!like) {
-    res.status(404).json({
-      error: {
-        likeNotFound: `Freet with freet ID ${req.params.freetId} does not exist.`
-      }
-    });
-    return;
-  }
-
-  next();
-};
-
 
 /**
  * Checks if the content of the freet in req.body is valid, i.e not a stream of empty
@@ -92,7 +62,5 @@ const isValidFreetModifier = async (req: Request, res: Response, next: NextFunct
 export {
   isValidFreetContent,
   isFreetExists,
-  isLikeExists,
-  isUserExists,
   isValidFreetModifier
 };

@@ -1,10 +1,8 @@
 import type {HydratedDocument, Types} from 'mongoose';
-import type {Like} from './model';
+import type {List} from './model';
 import LikeModel from './model';
 import UserCollection from '../user/collection';
 import FreetCollection from '../freet/collection';
-
-// Extend Like functionality to comments
 
 /**
  * This files contains a class that has the functionality to explore likes
@@ -33,26 +31,6 @@ class LikeCollection {
     return like.populate('userId', 'freetId');
   }
 
-   /**
-   * Find a like by likeId
-   *
-   * @param {string} likeId - The id of the like to find
-   * @return {Promise<HydratedDocument<Like>> | Promise<null> } - The freet with the given freetId, if any
-   */
-    static async findOne(freetId: Types.ObjectId | string): Promise<HydratedDocument<Like>> {
-      return LikeModel.findOne({_id: freetId}).populate('userId');
-    }
-  
-    /**
-     * Get all the likes in the database
-     *
-     * @return {Promise<HydratedDocument<Like>[]>} - An array of all of the freets
-     */
-    static async findAll(): Promise<Array<HydratedDocument<Like>>> {
-      // Retrieves freets and sorts them from most to least recent
-      return LikeModel.find({}).sort({dateModified: -1}).populate('userId');
-    }
-
   /**
    * Get all likes on a freet
    *
@@ -75,31 +53,16 @@ class LikeCollection {
     return LikeModel.find({userId: user._id}).populate('userId', 'freetId');
   }
 
-  /**
-   * Get number of likes on a freet
-   *
-   * @param {Freet} freetId - The freet
-   * @return {Promise<HydratedDocument<Like>[]>} - An array of all of the likes
-   */
-   static async numLikes(freetId: Types.ObjectId | string): Promise<Number> {
-    const freet = await FreetCollection.findOne(freetId);
-    const num = await LikeCollection.findLikesByFreet(freet._id);
-    return num.length;
-  }
-
+  // TODO - implement
     /**
    * Get users who liked a freet
    *
    * @param {Freet} freetId - The freet
    * @return {Promise<HydratedDocument<Like>[]>} - An array of all of the likes
    */
-     static async findUsersWhoLiked(freetId: Types.ObjectId | string): Promise<Array<HydratedDocument<Users>>> {
-      const likes = await LikeCollection.findLikesByFreet(freetId);
-      const users = [];
-      for (var val of likes) {
-        users.push(val.userId);
-      }
-      return users;
+     static async findUsersByLike(freetId: Types.ObjectId | string): Promise<Array<HydratedDocument<Like>>> {
+  
+      return num;
     }
 
   /**

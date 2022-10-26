@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/stylesheets/style.css">
   <script src="/scripts/freet.js"></script>
   <script src="/scripts/user.js"></script>
+  <script src="/scripts/comment.js"></script>
   <script src="/scripts/index.js"></script>
 </head>
 
@@ -118,6 +119,69 @@
           <input type="submit" value="Delete Freet">
         </form>
       </div>
+
+      <form id="add-comment">
+        <h3>Add Comment</h3>
+        <div>
+          <label for="referenceId">ID:</label>
+            <input id="referenceId" name="referenceId">
+          <label for="content">Content:</label>
+          <textarea id="content" name="content"></textarea>
+        </div>
+        <input type="submit" value="Add Comment">
+      </form>
+
+      <!-- <form id="view-all-comments">
+        <h3>View All Comments</h3>
+        <input type="submit" value="View All Comments">
+      </form> -->
+
+      <form id="view-all-comments-on-freet">
+        <h3>Get All Comments on Freet/ Comment</h3>
+        <div>
+          <label for="id">ID:</label>
+          <input id="id" name="id">
+        </div>
+        <input type="submit" value="View Comments on Freet">
+      </form>
+
+      <form id="delete-comment">
+        <h3>Delete Comment</h3>
+        <div>
+          <label for="id">ID:</label>
+          <input id="id" name="id">
+        </div>
+        <input type="submit" value="Delete Comment">
+      </form>
+
+      <form id="add-like">
+        <h3>Like a Freet</h3>
+        <div>
+          <label for="id">ID:</label>
+          <input id="id" name="id">
+        </div>
+        <input type="submit" value="Like Freet">
+      </form>
+
+      <form id="remove-like">
+        <h3>Unlike a Freet</h3>
+        <div>
+          <label for="id">ID:</label>
+          <input id="id" name="id">
+        </div>
+        <input type="submit" value="Remove Freet">
+      </form>
+    </div>
+    <form id="view-all-users-likes">
+      <h3>View User's Likes</h3>
+      <div>
+        <label for="user">User:</label>
+        <input id="user" name="user">
+      </div>
+      <input type="submit" value="View Comments on Freet">
+    </form>
+
+
     </section>
     <section>
       <h2>Response:</h2>
