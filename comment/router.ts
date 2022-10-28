@@ -1,5 +1,6 @@
 import type {NextFunction, Request, Response} from 'express';
 import express from 'express';
+import CommentModel from './model';
 import CommentCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as freetValidator from '../freet/middleware';
@@ -29,6 +30,7 @@ router.get(
     }
     const allComments = await CommentCollection.findAll();
     const response = await Promise.all(allComments.map(util.constructCommentResponse));
+    console.log('response', response);
     res.status(200).json(response);
   },
   [
@@ -61,10 +63,9 @@ router.post(
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const referenceId = (req.params.referenceId as string) // TODO: make front end forms, follow the readme 
+    const referenceId = (req.params.referenceId as string) ?? ''; // TODO: make front end forms, follow the readme 
     
-    const isComment = false;
-    const comment = await CommentCollection.addOne(userId, referenceId, isComment, req.body.content);
+    const comment = await CommentCollection.addOne(userId, referenceId, req.body.content);
 
     res.status(201).json({
       message: 'Your comment was created successfully.',

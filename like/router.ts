@@ -1,9 +1,11 @@
 import type {NextFunction, Request, Response} from 'express';
 import express from 'express';
 import LikeCollection from './collection';
+import type {User} from '../user/model';
 import * as userValidator from '../user/middleware';
 import * as freetValidator from '../freet/middleware';
 import * as likeValidator from '../like/middleware';
+import * as commentValidator from '../comment/middleware';
 import * as util from './util';
 
 const router = express.Router();
@@ -35,18 +37,41 @@ router.get(
       return;
     }
 
+    // find all likes
     const allLikes = await LikeCollection.findAll();
     const response = allLikes.map(util.constructLikeResponse);
     res.status(200).json(response);
   },
   [
-    userValidator.isUserExists
+    // userValidator.isUserExists
   ],
   async (req: Request, res: Response) => {
-    const authorLikes = await LikeCollection.findLikesByUsername(req.query.author as string);
-    const response = authorLikes.map(util.constructLikeResponse);
+    // find all likes by username
+    const userLikes = await LikeCollection.findLikesByUsername(req.query.username as string);
+    const response = userLikes.map(util.constructLikeResponse);
+    res.status(200).json(response);
+  },
+  async (req: Request, res: Response) => {
+    // find all likes by freet/ comment (reference)
+    const freetLikes = await LikeCollection.findAllByFreet(req.query.referenceId as string);
+    const response = freetLikes.map(util.constructLikeResponse);
+    res.status(200).json(response);
+  },
+
+  async (req: Request, res: Response) => {
+    // find users who liked
+    const likedBy = await LikeCollection.findUsersWhoLiked(req.query.referenceId as string);
+    const response = likedBy;
+    res.status(200).json(response);
+  },
+
+  async (req: Request, res: Response) => {
+    // find all likes by freet/ comment (reference)
+    const freetLikes = await LikeCollection.findAllByFreet(req.query.referenceId as string);
+    const response = freetLikes.map(util.constructLikeResponse);
     res.status(200).json(response);
   }
+
 );
 
 /**
@@ -63,15 +88,16 @@ router.post(
   '/',
   [
     userValidator.isUserLoggedIn,
-    freetValidator.isFreetExists
+    commentValidator.isFreetOrCommentExists
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const freet = await LikeCollection.addOne(userId, req.params.freetId); //TODO
+    const referenceId = (req.params.referenceId as string);
+    const like = await LikeCollection.addOne(userId, referenceId);
 
     res.status(201).json({
       message: 'Your like was created successfully.',
-      freet: util.constructLikeResponse(freet)
+      like: util.constructLikeResponse(like)
     });
   }
 );

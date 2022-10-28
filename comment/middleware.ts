@@ -26,7 +26,7 @@ const isFreetOrCommentExists = async (req: Request, res: Response, next: NextFun
   if (!reference) {
     res.status(404).json({
       error: {
-        commentNotFound: `Reference freet with ID ${id} does not exist.`
+        commentNotFound: `Reference freet or comment with ID ${id} does not exist.`
       }
     });
     return;

@@ -5,13 +5,13 @@ import LikeCollection from '../like/collection';
 
 // TODO: Add isValidFreetOrComment
 
-const isUserExists = async (req: Request, res: Response, next: NextFunction) => {
-  if (!req.query.user) {
-    res.status(400).json({
-      error: 'Provided author username must be nonempty.'
-    });
-    return;
-  };
+// const isUserExists = async (req: Request, res: Response, next: NextFunction) => {
+//   if (!req.query.user) {
+//     res.status(400).json({
+//       error: 'Provided author username must be nonempty.'
+//     });
+//     return;
+//   };
 
 /**
  * Checks if a freet with freetId is req.params exists
@@ -93,6 +93,5 @@ export {
   isValidFreetContent,
   isFreetExists,
   isLikeExists,
-  isUserExists,
-  isValidFreetModifier
+  isValidFreetModifier,
 };

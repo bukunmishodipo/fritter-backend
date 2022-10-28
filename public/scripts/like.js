@@ -11,7 +11,7 @@ function removeLike(fields) {
 }
 
 function getUsersLikes(fields){
-    fetch(`/api/likes?userId=${fields.user}`, {method: 'GET'})
+    fetch(`/api/likes?userId=${fields.user}`)
       .then(showResponse)
       .catch(showResponse);
 }

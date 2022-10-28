@@ -45,23 +45,18 @@ const formatDate = (date: Date): string => moment(date).format('MMMM Do YYYY, h:
     let reference_comment = null;
     let reference_freet = null;
     if(commentCopy.isComment == true){
-      const comment = await CommentModel.findById(commentCopy.referenceId);
+      const comment = await CommentModel.findOne({_id: commentCopy.referenceId});
       reference_comment = await constructCommentResponse(comment)
     }
     else{
-      const freet = await FreetModel.findById(commentCopy.referenceId);
+      console.log(commentCopy.referenceId);
+      const freet = await FreetModel.findOne({_id: commentCopy.referenceId});
+      console.log('freet:', freet);
       reference_freet = constructFreetResponse(freet); //inside constructFreetResponse we don't use await 
     }
   
     delete commentCopy.userId;
-    console.log({
-      ...commentCopy, // return all the fields of comment copt
-      _id: commentCopy._id.toString(),
-      user: username,
-      reference_comment: reference_comment,
-      reference_freet: reference_freet,
-      dateCommented: formatDate(comment.dateCommented),
-    });
+    
     return {
       ...commentCopy, // return all the fields of comment copt
       _id: commentCopy._id.toString(),

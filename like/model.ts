@@ -12,14 +12,14 @@ import FreetCollection from 'freet/collection';
 // Type definition for Like on the backend
 export type Like = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
-  freetId: Types.ObjectId;
+  referenceId: Types.ObjectId;
   userId: Types.ObjectId; // the user who likes the Freet
   dateLiked: Date; // will be used to sort likes from most to least recent
 };
 
 export type PopulatedLike = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
-  freetId: Freet | Comment;
+  referenceId: Freet | Comment;
   userId: User; // the user who likes the Freet
   dateLiked: Date; // will be used to sort likes from most to least recent
 };
@@ -30,7 +30,7 @@ export type PopulatedLike = {
 
 const LikeSchema = new Schema<Like>({
   // The author userId
-  freetId:{
+  referenceId:{
     type: Schema.Types.ObjectId,
     required: true
   },

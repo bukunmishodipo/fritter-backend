@@ -40,7 +40,7 @@ router.get(
     res.status(200).json(response);
   },
   [
-    likeValidator.isUserExists
+    // likeValidator.isUserExists // TODO
   ],
   async (req: Request, res: Response) => {
     const authorFreets = await FreetCollection.findAllByUsername(req.query.author as string);

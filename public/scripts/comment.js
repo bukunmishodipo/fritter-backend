@@ -11,7 +11,7 @@ function viewAllComments(fields) {
 }
 
 function viewAllCommentsOnFreet(fields){
-    fetch(`/api/comments?referenceId=${fields.id}`, {method: 'GET'})
+    fetch(`/api/comments?referenceId=${fields.id}`)
       .then(showResponse)
       .catch(showResponse);
 }
