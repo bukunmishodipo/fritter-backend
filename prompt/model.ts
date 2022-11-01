@@ -10,7 +10,7 @@ import FreetCollection from 'freet/collection';
  */
 
 // Type definition for Like on the backend
-export type Prompt = {
+export type PromptResponse = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation - maps to a prompt string in frontend
   userId: Types.ObjectId; // the user who answers the prompt
   content: string;
@@ -18,39 +18,43 @@ export type Prompt = {
   dateModified: Date;
 };
 
-export type PopulatedPrompt = {
+export type PopulatedPromptResponse = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   userId: User; // the user who comments on the Freet
-  freetId: Freet | Comment; // freet being commented on
   content: string;
-  dateCommented: Date;
+  dateResponded: Date;
+  dateModified: Date;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
 // Likes stored in this table will have these fields, with the
 // type given by the type property, inside MongoDB
 
-const PromptSchema = new Schema<Prompt>({
+const PromptResponseSchema = new Schema<PromptResponse>({
   // The author userId
   userId: {
     // Use Types.ObjectId outside of the schema
     type: Schema.Types.ObjectId,
     required: true,
+    ref: 'User',
   },
-  dateResponded:{
-    type: Date,
-    required: true
-  },
+  
   content: {
     type: String,
     required: true
   },
+
   // The date the comment was created
-  dateCommented: {
+  dateResponded: {
     type: Date,
     required: true
   },
+
+  dateModified: {
+    type: Date,
+    required: true
+  }
 });
 
-const CommentModel = model<Comment>('comment', CommentSchema);
-export default CommentModel;
+const PromptResponseModel = model<PromptResponse>('promptResponse', PromptResponseSchema);
+export default PromptResponseModel;

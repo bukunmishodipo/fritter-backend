@@ -45,7 +45,14 @@ const formsAndHandlers = {
   'delete-comment': deleteComment,
   'add-like': addLike,
   'remove-like': removeLike,
+  'get-all-likes': getAllLikes,
   'get-users-likes': getUsersLikes,
+  'get-reference-likes': getReferenceLikes,
+  'add-prompt-response': addPromptResponse,
+  'view-all-prompt-responses': viewAllPromptResponses,
+  'view-users-prompt-responses': viewUsersPromptResponse,
+  'update-prompt-response': updatePromptResponse,
+  'remove-prompt-response': removePromptResponse
 };
 
 // Attach handlers to forms

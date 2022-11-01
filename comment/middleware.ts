@@ -21,12 +21,17 @@ const isCommentExists = async (req: Request, res: Response, next: NextFunction) 
 const isFreetOrCommentExists = async (req: Request, res: Response, next: NextFunction) => {
   const id = req.query.referenceId as string;
   const validFormat = Types.ObjectId.isValid(id);
-  const reference = validFormat ? await FreetCollection.findOne(id) : await CommentCollection.findOne(id);
-  
+  let reference;
+  if (validFormat){
+    reference = await FreetCollection.findOne(id);
+    if (!reference){
+      reference = CommentCollection.findOne(id);
+    }
+  }
   if (!reference) {
     res.status(404).json({
       error: {
-        commentNotFound: `Reference freet or comment with ID ${id} does not exist.`
+        referenceNotFound: `Reference freet or comment with ID ${id} does not exist.`
       }
     });
     return;

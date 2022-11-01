@@ -17,7 +17,7 @@ function viewAllCommentsOnFreet(fields){
 }
 
 function deleteComment(fields) {
-  fetch(`/api/comments?commentId=${fields.id}`, {method: 'DELETE'})
+  fetch(`/api/comments/${fields.id}`, {method: 'DELETE'})
     .then(showResponse)
     .catch(showResponse);
 }

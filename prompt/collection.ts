@@ -1,6 +1,8 @@
 import type {HydratedDocument, Types} from 'mongoose';
-import type {Comment} from './model';
-import CommentModel from './model';
+import type {Comment} from '../comment/model';
+import CommentModel from '../comment/model';
+import type {PromptResponse} from './model';
+import PromptResponseModel from './model';
 import UserCollection from '../user/collection';
 import type {User} from '../user/model';
 import type {Freet} from '../freet/model';
@@ -14,58 +16,92 @@ import FreetCollection from '../freet/collection';
  * Note: HydratedDocument<Like> is the output of the FreetModel() constructor,
  * and contains all the information in Like. https://mongoosejs.com/docs/typescript.html
  */
-class CommentCollection {
+class PromptResponseCollection {
   /**
-   * Add a comment to the collection
+   * Add a prompt response to the collection
    *
-   * @param {string} userId - The user who comments on the freet
-   * @param {Freet} freetId - The freet
-   * @param {string} content - content of the comment
-   * @return {Promise<HydratedDocument<Comment>>} - The newly created comment
+   * @param {string} userId - The user who responds to the prompt
+   * @param {string} content - content of the response
+   * @return {Promise<HydratedDocument<Comment>>} - The newly created response
    */
-  static async addOne(userId: Types.ObjectId | string, freetId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Comment>> {
+  static async addOne(userId: Types.ObjectId | string, content: string): Promise<HydratedDocument<PromptResponse>> {
     const date = new Date();
-    const comment = new CommentModel({
+    const comment = new PromptResponseModel({
       userId,
-      freetId,
       content,
-      dateCommented: date,
+      dateResponded: date,
+      dateModified: date,
     });
-    await comment.save(); // Saves like to MongoDB
+    await comment.save(); // Saves responseto MongoDB
     return comment.populate('userId');
   }
 
-   /**
-   * Find a comment by commentId
+    /**
+   * Get all the responses in the database
    *
-   * @param {string} commentId - The id of the comment to find
-   * @return {Promise<HydratedDocument<Freet>> | Promise<null> } - The freet with the given freetId, if any
+   * @return {Promise<HydratedDocument<PromptResponse>[]>} - An array of all of the responses
    */
-    static async findOne(commentId: Types.ObjectId | string): Promise<HydratedDocument<Comment>> {
-      return CommentModel.findOne({_id: commentId}).populate('userId');
+     static async findAll(): Promise<Array<HydratedDocument<PromptResponse>>> {
+      // Retrieves responses and sorts them from most to least recent
+      return PromptResponseModel.find({}).sort({dateModified: -1}).populate('userId');
+    }
+
+   /**
+   * Find a response by responseId
+   *
+   * @param {string} responseId - The id of the response to find
+   * @return {Promise<HydratedDocument<PromptResponse>> | Promise<null> } - The response with the given responseId, if any
+   */
+    static async findPrompt(responseId: Types.ObjectId | string): Promise<HydratedDocument<PromptResponse>> {
+      return PromptResponseModel.findOne({_id: responseId}).populate('userId');
+    }
+
+// find a response by username
+    static async findResponseByUsername(userId: Types.ObjectId | string): Promise<Array<HydratedDocument<PromptResponse>>> {
+      return PromptResponseModel.find({userId: userId}).populate('userId', 'referenceId');
+    }
+
+    static async updateOne(responseId: Types.ObjectId | string, content: string): Promise<HydratedDocument<PromptResponse>> {
+      const promptResponse = await PromptResponseModel.findOne({_id: responseId});
+      promptResponse.content = content;
+      promptResponse.dateModified = new Date();
+      await promptResponse.save();
+      return promptResponse.populate('userId');
     }
 
   /**
-   * Get all comments on the freet in database
+   * Get all the responses in by given username
    *
-   * @param {FreetId_} freetId - The username of author of the freets
-   * @return {Promise<HydratedDocument<Comments>[]>} - An array of all of the freets
+   * @param {string} username - The username of author of the responses
+   * @return {Promise<HydratedDocument<PromptResponse>[]>} - An array of all of the responses
    */
-  static async findAllByFreet(freetId: Types.ObjectId| string): Promise<Array<HydratedDocument<Comment>>> {
-    const freet = await FreetCollection.findOne(freetId);
-    return CommentModel.find({freet: freet._id}).populate('userId');
+   static async findAllByUsername(username: string): Promise<Array<HydratedDocument<PromptResponse>>> {
+    const user = await UserCollection.findOneByUsername(username);
+    return PromptResponseModel.find({userId: user._id}).populate('userId');
   }
 
-  /**
-   * Remove a comment
+    /**
+   * Find a response by responseId
    *
-   * @param {string} commentId  - The comment to delete
+   * @param {string} responseId - The id of the response to find
+   * @return {Promise<HydratedDocument<PromptResponse>> | Promise<null> } - The response with the given responseId, if any
+   */
+     static async findOne(responseId: Types.ObjectId | string): Promise<HydratedDocument<PromptResponse>> {
+      return PromptResponseModel.findOne({_id: responseId}).populate('userId');
+    }
+
+
+
+  /**
+   * Remove a response
+   *
+   * @param {string} responseId  - The response to delete
    * @return {Promise<Boolean>} - true if the freet has been deleted, false otherwise
    */
-  static async deleteOne(commentId: Types.ObjectId | string): Promise<boolean> {
-    const comment = await CommentModel.deleteOne({_id: commentId});
-    return comment !== null;
+  static async deleteOne(responseId: Types.ObjectId | string): Promise<boolean> {
+    const response = await PromptResponseModel.deleteOne({_id: responseId});
+    return response !== null;
   }
 }
 
-export default CommentCollection;
+export default PromptResponseCollection;

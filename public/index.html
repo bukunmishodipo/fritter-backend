@@ -9,6 +9,7 @@
   <script src="/scripts/user.js"></script>
   <script src="/scripts/comment.js"></script>
   <script src="/scripts/like.js"></script>
+  <script src="/scripts/prompt.js"></script>
   <script src="/scripts/index.js"></script>
 </head>
 
@@ -119,68 +120,133 @@
           </div>
           <input type="submit" value="Delete Freet">
         </form>
-      </div>
 
-      <form id="add-comment">
-        <h3>Add Comment</h3>
-        <div>
-          <label for="referenceId">ID:</label>
+        <form id="add-comment">
+          <h3>Add Comment</h3>
+          <div>
+            <label for="referenceId">ID:</label>
+              <input id="referenceId" name="referenceId">
+            <label for="content">Content:</label>
+            <textarea id="content" name="content"></textarea>
+          </div>
+          <input type="submit" value="Add Comment">
+        </form>
+
+        <form id="view-all-comments">
+          <h3>View All Comments</h3>
+          <input type="submit" value="View All Comments">
+        </form>
+
+        <form id="view-all-comments-on-freet">
+          <h3>Get All Comments on Freet/ Comment</h3>
+          <div>
+            <label for="id">ID:</label>
+            <input id="id" name="id">
+          </div>
+          <input type="submit" value="View Comments on Freet">
+        </form>
+
+        <form id="delete-comment">
+          <h3>Delete Comment</h3>
+          <div>
+            <label for="id">ID:</label>
+            <input id="id" name="id">
+          </div>
+          <input type="submit" value="Delete Comment">
+        </form>
+
+        <form id="add-like">
+          <h3>Like a Freet</h3>
+          <div>
+            <label for="referenceId">ID:</label>
             <input id="referenceId" name="referenceId">
+          </div>
+          <input type="submit" value="Like Freet">
+        </form>
+
+        <form id="remove-like">
+          <h3>Unlike a Freet</h3>
+          <div>
+            <label for="id">ID:</label>
+            <input id="id" name="id">
+          </div>
+          <input type="submit" value="Remove Freet">
+        </form>
+
+        <form id="get-all-likes">
+          <h3>View All Likes</h3>
+          <input type="submit" value="View All Likes">
+        </form>
+  
+      <form id="get-users-likes">
+        <h3>View User's Likes</h3>
+        <div>
+          <label for="user">User:</label>
+          <input id="user" name="user">
+        </div>
+        <input type="submit" value="View User's Likes">
+      </form>
+      
+      <form id="get-reference-likes">
+        <h3>View Freet/Comment Likes</h3>
+        <div>
+          <label for="referenceId">Referece:</label>
+          <input id="referenceId" name="referenceId">
+        </div>
+        <input type="submit" value="View Freet/Comment  Likes">
+      </form>
+
+      <form id="add-prompt-response">
+        <h3>Respond to Prompt</h3>
+        <h2>Prompt of the week:
+          What was the funniest freet you saw this week?
+        </h2>
+        <div>
           <label for="content">Content:</label>
           <textarea id="content" name="content"></textarea>
         </div>
-        <input type="submit" value="Add Comment">
+        <input type="submit" value="Respond to Prompt">
       </form>
 
-      <form id="view-all-comments">
-        <h3>View All Comments</h3>
-        <input type="submit" value="View All Comments">
-      </form>
-
-      <form id="view-all-comments-on-freet">
-        <h3>Get All Comments on Freet/ Comment</h3>
+      <form id="update-prompt-response">
+        <h3>Update Prompt Response</h3>
         <div>
           <label for="id">ID:</label>
           <input id="id" name="id">
         </div>
-        <input type="submit" value="View Comments on Freet">
+        <div>
+          <label for="content">Content:</label>
+          <textarea id="content" name="content"></textarea>
+        </div>
+        <input type="submit" value="Update Prompt Response">
       </form>
 
-      <form id="delete-comment">
-        <h3>Delete Comment</h3>
+      <form id="remove-prompt-response">
+        <h3>Remove Prompt Response</h3>
         <div>
           <label for="id">ID:</label>
           <input id="id" name="id">
         </div>
-        <input type="submit" value="Delete Comment">
+        <input type="submit" value="Remove Prompt Response">
       </form>
 
-      <form id="add-like">
-        <h3>Like a Freet</h3>
-        <div>
-          <label for="id">ID:</label>
-          <input id="id" name="id">
-        </div>
-        <input type="submit" value="Like Freet">
+      <form id="view-all-prompt-responses">
+        <h3>View All Prompt Responses</h3>
+        <input type="submit" value="View All Prompt Responses">
       </form>
 
-      <form id="remove-like">
-        <h3>Unlike a Freet</h3>
-        <div>
-          <label for="id">ID:</label>
-          <input id="id" name="id">
-        </div>
-        <input type="submit" value="Remove Freet">
-      </form>
-    </div>
-    <form id="get-users-likes">
-      <h3>View User's Likes</h3>
+    <form id="view-users-prompt-responses">
+      <h3>View User's Prompt Response</h3>
       <div>
         <label for="user">User:</label>
         <input id="user" name="user">
       </div>
-      <input type="submit" value="View User's Likes">
+      <input type="submit" value="View User's Prompt Responses">
     </form>
+
+  </div>
+
+    </div>
 
 
     </section>

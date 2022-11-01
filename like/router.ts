@@ -7,6 +7,7 @@ import * as freetValidator from '../freet/middleware';
 import * as likeValidator from '../like/middleware';
 import * as commentValidator from '../comment/middleware';
 import * as util from './util';
+import LikeModel from './model';
 
 const router = express.Router();
 
@@ -32,46 +33,37 @@ router.get(
   '/',
   async (req: Request, res: Response, next: NextFunction) => {
     // Check if authorId query parameter was supplied
-    if (req.query.user !== undefined) {
-      next();
-      return;
+    if (req.query.user) next(); // skip to the next middleware in this substack
+    else if (req.query.referenceId) next('route'); // skip the rest of this substack, move to next substack
+    else{
+       // find all likes
+      const allLikes = await LikeCollection.findAll();
+      const response = await Promise.all(allLikes.map(util.constructLikeResponse));
+      // console.log(response);
+      res.status(200).json(response);
     }
-
-    // find all likes
-    const allLikes = await LikeCollection.findAll();
-    const response = allLikes.map(util.constructLikeResponse);
-    res.status(200).json(response);
-  },
+    },
   [
-    // userValidator.isUserExists
+    likeValidator.isUserExists
   ],
   async (req: Request, res: Response) => {
     // find all likes by username
-    const userLikes = await LikeCollection.findLikesByUsername(req.query.username as string);
-    const response = userLikes.map(util.constructLikeResponse);
-    res.status(200).json(response);
-  },
-  async (req: Request, res: Response) => {
-    // find all likes by freet/ comment (reference)
-    const freetLikes = await LikeCollection.findAllByFreet(req.query.referenceId as string);
-    const response = freetLikes.map(util.constructLikeResponse);
-    res.status(200).json(response);
-  },
-
-  async (req: Request, res: Response) => {
-    // find users who liked
-    const likedBy = await LikeCollection.findUsersWhoLiked(req.query.referenceId as string);
-    const response = likedBy;
-    res.status(200).json(response);
-  },
-
-  async (req: Request, res: Response) => {
-    // find all likes by freet/ comment (reference)
-    const freetLikes = await LikeCollection.findAllByFreet(req.query.referenceId as string);
-    const response = freetLikes.map(util.constructLikeResponse);
+    const userLikes = await LikeCollection.findLikesByUsername(req.query.user as string);
+    const response = await Promise.all(userLikes.map(util.constructLikeResponse));
     res.status(200).json(response);
   }
+),
 
+router.get(
+  '/',
+  [likeValidator.isFreetOrCommentExists],
+  async (req: Request, res: Response) => {
+    console.log('happy');
+    // find all likes by freet/ comment (reference)
+    const freetLikes = await LikeCollection.findAllByFreet(req.query.referenceId as string);
+    const response = await Promise.all(freetLikes.map(util.constructLikeResponse));
+    res.status(200).json(response);
+  }
 );
 
 /**
@@ -88,16 +80,17 @@ router.post(
   '/',
   [
     userValidator.isUserLoggedIn,
-    commentValidator.isFreetOrCommentExists
+    likeValidator.isFreetOrCommentExists,
+    likeValidator.isLikedAlready
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const referenceId = (req.params.referenceId as string);
+    const referenceId = (req.body.referenceId as string);
+    console.log('user and reference', userId, referenceId);
     const like = await LikeCollection.addOne(userId, referenceId);
-
     res.status(201).json({
       message: 'Your like was created successfully.',
-      like: util.constructLikeResponse(like)
+      like: await util.constructLikeResponse(like)
     });
   }
 );
@@ -105,7 +98,7 @@ router.post(
 /**
  * Delete a like (Unlike)
  *
- * @name DELETE /api/freets/:id
+ * @name DELETE /api/freets/:referenceId?
  *
  * @return {string} - A success message
  * @throws {403} - If the user is not logged in or is not the author of
@@ -113,15 +106,16 @@ router.post(
  * @throws {404} - If the freetId is not valid
  */
 router.delete(
-  '/:freetId?',
+  '/:referenceId?',
   [
     userValidator.isUserLoggedIn,
-    freetValidator.isFreetExists,
-    freetValidator.isValidFreetModifier,
+    likeValidator.isValidLikeModifier,
+    likeValidator.isFreetOrCommentExists,
     likeValidator.isLikeExists,
   ],
   async (req: Request, res: Response) => {
-    await LikeCollection.deleteOne(req.params.freetId);
+    const like = await LikeCollection.findOne(req.params.referenceId);
+    await LikeCollection.deleteOne(like._id);
     res.status(200).json({
       message: 'Your like was deleted successfully.'
     });

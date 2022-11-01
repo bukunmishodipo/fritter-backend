@@ -58,7 +58,7 @@ const formatDate = (date: Date): string => moment(date).format('MMMM Do YYYY, h:
     delete commentCopy.userId;
     
     return {
-      ...commentCopy, // return all the fields of comment copt
+      ...commentCopy, // return all the fields of comment copy
       _id: commentCopy._id.toString(),
       user: username,
       // content: content,
@@ -69,5 +69,6 @@ const formatDate = (date: Date): string => moment(date).format('MMMM Do YYYY, h:
   };
   
   export {
-    constructCommentResponse
+    constructCommentResponse,
+    CommentResponse
   };

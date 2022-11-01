@@ -317,73 +317,164 @@ This renders the `index.html` file that will be used to interact with the backen
 
 ### Newly Added Routes
 
+#### `GET /api/likes` - Get all likes in the database
+
+**Returns**
+
+- An array of all the likes in the database in descending order by date liked
+
+
 #### `GET /api/likes?user=USERNAME` - Get all likes by user
 
 **Returns**
 
 - An array of all the user's likes in descending order by date liked
 
-#### `POST /api/likes/:freetId?` - Like an existing freet
+**Throws**
 
-**Body**
+- `400` if the user field is empty
+- `403` if the user specified does not exist
 
-- `freetId` _{string}_ - The liked freet
+#### `GET /api/likes?reference=referenceId` - Get all likes on a given freet or comment
 
 **Returns**
 
-- List of likes plus the liked freet
+- An array of all the likes on the specific freet or comment in descending order by date liked
+
+**Throws**
+
+- `404` if the freet or comment specified does not exist
+
+#### `POST /api/likes/` - Like an existing freet
+
+**Body**
+
+- `referenceId` _{string}_ - The liked freet or comment
+
+**Returns**
+
+- A success message if the freet or comment has been liked and the new like object
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the freet or comment has already been liked
+- `404` if the freet or comment specified does not exist
 
 #### `DELETE /api/likes/:freetId?` - unike an existing freet
 
 **Returns**
 
-- List of likes minus the unliked freet
+- A success message
 
-#### `POST /api/lists` - Create an new list
+**Throws**
 
-**Body**
+- `403` if the user is not logged in
+- `404` if a like is not found
+- `404` if the freet or comment specified does not exist
 
-- `listName` _{string}_ - The name of the list
-- `description` _{string}_ - An optional description of the list 
-- `freets` _{array}_ - A list of freets added to the list which is initially empty  
-- `public` _{boolean}_ - Denotes who has access to the list
+#### `GET /api/comments` - Get all comments in the database
+
+**Returns**
+
+- An array of all the comments in the database in descending order by date commented
+
+#### `GET /api/comments?reference=referenceId` - Get all comments on a given freet or comment
+
+**Returns**
+
+- An array of all the comments in the database associated with a given freet or comment in descending order by date commented
+
+**Throws**
+
+- `404` if the freet or comment specified does not exist
+
+#### `DELETE /api/comments/:commentId?` - delete an existing comment
 
 **Returns**
 
 - A success message
-- An object with the created list that's either public or private
 
-#### `PUT /api/lists/:freetId` - Add freet to list
+**Throws**
 
-**Body**
+- `403` if the user is not logged in
+- `403` if a user attempts to delete a comment that's not theirs
+- `404` if a comment is not found
 
-- `freet` _{Freet}_ - The freet being added to a list
-- `list` _{List}_ - The list the freet is being added to
+
+#### `POST /api/comments/referenceId` - Add a comment to a freet or comment
 
 **Returns**
 
 - A success message
-- An object with the update list
+- A new comment object
 
-#### `DELETE /api/lists/:listName?` - delete a list
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the freet or comment specified does not exist
+
+#### `GET /api/prompts` - Get all prompt responses in the database
 
 **Returns**
 
-- List of lists minus the deleted list
+- An array of all the prompt responses in the database in descending order by date responded
 
-#### `GET /api/prompts` - Get prompt
+#### `GET /api/prompts?user=USERNAME` - Get a user's prompt response
 
 **Returns**
 
-- A string with the prompt and a form to respond
+- An array that holds a user's respomse
 
-#### `POST /api/prompts` - Respond to prompt
+**Throws**
+
+- `404` if the user does not exist
+
+#### `POST /api/prompts` - Add a response to the prompt
+
+**Returns**
+
+- A success message
+- A new comment object
+
 **Body**
+- `content` _{string}_ - The content of the response
 
-- `response` _{Freet}_ - The prompt response
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user has answered the prompt already
+- `400` if the response content is empty or a stream of empty spaces
+- `413` if the response content is more than 140 characters long
+
+#### `DELETE /api/prompts/:promptId?` - delete an existing response
 
 **Returns**
 
-- Prompt response pinned to the user profile and added to the Prompts page
+- A success message
 
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if a user attempts to delete a response that's not theirs
+- `404` if a response is not found
+
+#### `PUT /api/prompts/?promptId:` - Update a prompt response
+
+**Body** _(no need to add fields that are not being changed)_
+
+- `content` _{string}_ - The updated content of the response
+
+**Returns**
+
+- A success message
+- An object with the updated prompt details
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the tries to edit a prompt that is not theirs
+- `404` if no response exists
+- `400` if the new response content is empty or a stream of empty spaces
+- `413` if the new response content is more than 140 characters long
 

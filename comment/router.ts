@@ -59,11 +59,12 @@ router.post(
   '/:referenceId',
   [
     userValidator.isUserLoggedIn,
+    commentValidator.isFreetOrCommentExists,
 
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const referenceId = (req.params.referenceId as string) ?? ''; // TODO: make front end forms, follow the readme 
+    const referenceId = (req.params.referenceId as string) ?? ''; 
     
     const comment = await CommentCollection.addOne(userId, referenceId, req.body.content);
 

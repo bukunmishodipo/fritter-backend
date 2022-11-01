@@ -3,7 +3,7 @@ import type {Like} from './model';
 import type {User} from '../user/model';
 import LikeModel from './model';
 import UserCollection from '../user/collection';
-import FreetCollection from '../freet/collection';
+import CommentCollection from '../comment/collection';
 
 // Extend Like functionality to comments
 
@@ -25,13 +25,25 @@ class LikeCollection {
    */
   static async addOne(userId: Types.ObjectId | string, referenceId: Types.ObjectId | string): Promise<HydratedDocument<Like>> {
     const date = new Date();
+
+    let isComment;
+    const commentObj = await CommentCollection.findOne(referenceId);
+
+    if(commentObj == null){
+      isComment = false;
+    }
+    else{
+      isComment = true;
+    }
+
     const like = new LikeModel({
       referenceId,
+      isComment,
       userId,
       dateLiked: date,
     });
     await like.save(); // Saves like to MongoDB
-    return like.populate('userId', 'referenceId');
+    return like.populate('userId');
   }
 
    /**
@@ -41,7 +53,7 @@ class LikeCollection {
    * @return {Promise<HydratedDocument<Like>> | Promise<null> } - The freet with the given referenceId, if any
    */
     static async findOne(referenceId: Types.ObjectId | string): Promise<HydratedDocument<Like>> {
-      return LikeModel.findOne({_id: referenceId}).populate('userId');
+      return LikeModel.findOne({referenceId: referenceId}).populate('userId');
     }
   
     /**
@@ -93,19 +105,19 @@ class LikeCollection {
   }
 
     /**
-   * Get users who liked a freet // TODO
+   * Get users who liked a freet 
    *
    * @param {Freet} referenceId - The freet
    * @return {Promise<HydratedDocument<User>[]>} - An array of all of the likes
    */
-     static async findUsersWhoLiked(referenceId: Types.ObjectId | string): Promise<Array<HydratedDocument<User>[]>> {
+     static async findUsersWhoLiked(referenceId: Types.ObjectId | string): Promise<Array<HydratedDocument<User>>> {
       const likes = await LikeCollection.findAllByFreet(referenceId);
-      const users: User[] = [];
+      const users = [];
       for (var val of likes) {
         const user = await UserCollection.findOneByUserId(val.userId);
         users.push(user);
       }
-      return users; //TODO
+      return users;
     }
 
   /**

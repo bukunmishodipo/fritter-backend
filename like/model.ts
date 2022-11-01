@@ -13,6 +13,7 @@ import FreetCollection from 'freet/collection';
 export type Like = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   referenceId: Types.ObjectId;
+  isComment: boolean,
   userId: Types.ObjectId; // the user who likes the Freet
   dateLiked: Date; // will be used to sort likes from most to least recent
 };
@@ -20,6 +21,7 @@ export type Like = {
 export type PopulatedLike = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   referenceId: Freet | Comment;
+  isComment: boolean,
   userId: User; // the user who likes the Freet
   dateLiked: Date; // will be used to sort likes from most to least recent
 };
@@ -34,10 +36,16 @@ const LikeSchema = new Schema<Like>({
     type: Schema.Types.ObjectId,
     required: true
   },
+  isComment:{
+    type: Boolean,
+    default: false,
+    required: true
+  },
   userId: {
     // Use Types.ObjectId outside of the schema
     type: Schema.Types.ObjectId,
-    required: true
+    required: true,
+    ref: 'User'
   },
   // The date the freet was created
   dateLiked: {

@@ -1,24 +1,22 @@
 import type {HydratedDocument} from 'mongoose';
 import moment from 'moment';
-import type {Comment, PopulatedComment} from '../comment/model';
-import type {Freet, PopulatedFreet} from '../freet/model';
+import type {PromptResponse, PopulatedPromptResponse} from './model';
 
-// Update this if you add a property to the Freet or Comment type!
 
-type FreetResponse = {
+type PopulatedPromptResponseResponse = {
     _id: string;
-    author: string;
-    dateCreated: string;
+    user: string;
     content: string;
+    dateResponded: string;
     dateModified: string;
   };
 
-type CommentResponse = {
+type PromptResponseResponse = {
   _id: string;
   user: string;
-  freet: string;
   content: string;
-  dateCommented: string;
+  dateResponded: string;
+  dateModified: string;
 };
 
 /**
@@ -29,59 +27,24 @@ type CommentResponse = {
  */
 const formatDate = (date: Date): string => moment(date).format('MMMM Do YYYY, h:mm:ss a');
 
-/**
- * Transform a raw Freet object from the database into an object
- * with all the information needed by the frontend
- *
- * @param {HydratedDocument<Freet>} freet - A freet
- * @returns {FreetResponse} - The freet object formatted for the frontend
- */
-const constructFreetResponse = (freet: HydratedDocument<Freet>): FreetResponse => {
-  const freetCopy: PopulatedFreet = {
-    ...freet.toObject({
+const constructPromptResponseResponse = (response: HydratedDocument<PromptResponse>): PromptResponseResponse => {
+  const responseCopy: PopulatedPromptResponse = {
+    ...response.toObject({
       versionKey: false // Cosmetics; prevents returning of __v property
     })
   };
-  const {username} = freetCopy.authorId;
-  delete freetCopy.authorId;
+  const {username} = responseCopy.userId;
+  delete responseCopy.userId;
   return {
-    ...freetCopy,
-    _id: freetCopy._id.toString(),
-    author: username,
-    dateCreated: formatDate(freet.dateCreated),
-    dateModified: formatDate(freet.dateModified)
+    ...responseCopy,
+    _id: responseCopy._id.toString(),
+    user: username,
+    dateResponded: formatDate(response.dateResponded),
+    dateModified: formatDate(response.dateModified)
   };
 };
 
 export {
-  constructFreetResponse
+  constructPromptResponseResponse,
+  PromptResponseResponse
 };
-
-/**
- * Transform a raw comment object from the database into an object
- * with all the information needed by the frontend
- *
- * @param {HydratedDocument<Comment>} comment - A comment
- * @returns {CommentResponse} - The comment object formatted for the frontend
- */
- const constructCommentResponse = (comment: HydratedDocument<Comment>): CommentResponse => {
-    const commentCopy: PopulatedComment = {
-      ...comment.toObject({
-        versionKey: false // Cosmetics; prevents returning of __v property
-      })
-    };
-    const {username} = commentCopy.userId;
-    const {content} = commentCopy.freetId;
-    delete commentCopy.userId;
-    return {
-      ...commentCopy, // return all the fields of comment copt
-      _id: commentCopy._id.toString(),
-      user: username,
-      freet: content, // TODO: i want to display other elements of the freet in my frontend but 
-      dateCommented: formatDate(comment.dateCommented),
-    };
-  };
-  
-  export {
-    constructCommentResponse
-  };

@@ -25,7 +25,7 @@ class CommentCollection {
    * @return {Promise<HydratedDocument<Comment>>} - The newly created comment
    */
   static async addOne(userId: Types.ObjectId | string, referenceId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Comment>> {
-    console.log(await FreetCollection.findOne('6350918ff70365dc2a7dad40'))
+    // console.log(await FreetCollection.findOne('6350918ff70365dc2a7dad40'))
     const date = new Date();
 
     let isComment;
@@ -90,8 +90,7 @@ class CommentCollection {
       const num = await CommentCollection.findAllByFreet(referenceIdToSearchFor);
       return num.length;
     }
-
-  // TODO: fix delete in frontend
+    
   /**
    * Remove a comment
    *
